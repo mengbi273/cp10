@@ -1,0 +1,93 @@
+<!-- Frontend Code (HTML, CSS, JS): -->
+<!-- Save this as index.html in the same directory -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Search with CLIP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { padding: 20px; }
+        .progress { display: none; margin-top: 10px; }
+        .card img { max-width: 100%; height: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Image Search with CLIP</h1>
+
+        <div class="mb-3">
+            <label for="fileInput" class="form-label">Upload Images</label>
+            <input type="file" id="fileInput" class="form-control" multiple>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Image Description</label>
+            <input type="text" id="description" class="form-control" placeholder="Enter a description to search images">
+        </div>
+
+        <button class="btn btn-primary" onclick="uploadImages()">Upload Images</button>
+        <button class="btn btn-success" onclick="searchImages()">Search Images</button>
+
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%;">Searching...</div>
+        </div>
+
+        <div id="results" class="mt-4 d-flex flex-wrap"></div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const progressBar = document.querySelector('.progress');
+
+        async function uploadImages() {
+            const files = fileInput.files;
+            if (!files.length) return alert('Please select files to upload.');
+
+            const formData = new FormData();
+            for (const file of files) formData.append('files', file);
+
+            await fetch('http://127.0.0.1:8000/upload', {
+                method: 'POST',
+                body: formData,
+            });
+            alert('Images uploaded successfully!');
+        }
+
+        async function searchImages() {
+            const description = document.getElementById('description').value;
+            if (!description) return alert('Please enter a description.');
+
+            const formData = new FormData();
+            formData.append('description', description);
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            progressBar.style.display = 'block';
+
+            const response = await fetch('http://127.0.0.1:8000/search', {
+                method: 'POST',
+                body: formData,
+            });
+
+            progressBar.style.display = 'none';
+            const result = await response.json();
+
+            result.results.forEach(item => {
+                const card = document.createElement('div');
+                card.classList.add('card', 'm-2');
+                card.style.width = '18rem';
+                card.innerHTML = `
+                    <img src="uploaded_images/${item.name}" class="card-img-top" alt="${item.name}">
+                    <div class="card-body">
+                        <p class="card-text">${item.name}</p>
+                    </div>
+                `;
+                resultsDiv.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
