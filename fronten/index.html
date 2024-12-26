@@ -49,7 +49,7 @@
             const formData = new FormData();
             for (const file of files) formData.append('files', file);
 
-            await fetch('http://127.0.0.1:8000/upload', {
+            await fetch('http://13.231.221.75:8000/upload', {
                 method: 'POST',
                 body: formData,
             });
@@ -67,7 +67,7 @@
             resultsDiv.innerHTML = '';
             progressBar.style.display = 'block';
 
-            const response = await fetch('http://127.0.0.1:8000/search', {
+            const response = await fetch('http://13.231.221.75:8000/search', {
                 method: 'POST',
                 body: formData,
             });
