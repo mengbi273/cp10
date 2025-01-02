@@ -49,7 +49,7 @@
             const formData = new FormData();
             for (const file of files) formData.append('files', file);
 
-            await fetch('http://13.231.221.75:8000/upload', {
+            await fetch('http://52.194.236.162:8000/upload', {
                 method: 'POST',
                 body: formData,
             });
@@ -67,7 +67,7 @@
             resultsDiv.innerHTML = '';
             progressBar.style.display = 'block';
 
-            const response = await fetch('http://13.231.221.75:8000/search', {
+            const response = await fetch('http://52.194.236.162:8000/search', {
                 method: 'POST',
                 body: formData,
             });
@@ -80,7 +80,7 @@
                 card.classList.add('card', 'm-2');
                 card.style.width = '18rem';
                 card.innerHTML = `
-                    <img src="uploaded_images/${item.name}" class="card-img-top" alt="${item.name}">
+                    <img src="http://52.194.236.162:8000/uploaded_images/${item.name}" class="card-img-top" alt="${item.name}">
                     <div class="card-body">
                         <p class="card-text">${item.name}</p>
                     </div>
